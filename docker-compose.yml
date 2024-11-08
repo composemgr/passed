@@ -1,0 +1,20 @@
+name: passed
+services:
+  passed:
+    build: "https://git.1e99.eu/1e99/passed.git"
+    container_name: passed
+    hostname: passed
+    environment:
+      - "PASSED_STORE_TYPE=dir"
+      - "PASSED_STORE_DIR_PATH=/etc/passed"
+    ports:
+      - "59029:3000"
+    volumes:
+      - "/var/lib/srv/${USER}/docker/1e99/passed/latest/rootfs/data/passed:/etc/passed"
+    networks:
+      - passed
+
+networks:
+  passed:
+    name: passed
+    external: false
