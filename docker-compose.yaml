@@ -1,0 +1,32 @@
+# nginx proxy address - http://172.17.0.1:59029
+
+name: passed
+x-logging: &default-logging
+  options:
+    max-size: '5m'
+    max-file: '1'
+  driver: json-file
+
+services:
+  app:
+    image: git.1e99.eu/1e99/passed:latest
+    container_name: passed-app
+    hostname: ${BASE_HOST_NAME:-$HOSTNAME}
+    restart: always
+    pull_policy: always
+    logging: *default-logging
+    environment:
+      TZ: ${TZ:-America/New_York}
+      - 'PASSED_STORE_TYPE=dir'
+      - 'PASSED_STORE_DIR_PATH=/data/passed'
+    ports:
+      - '172.17.0.1:59029:3000'
+    volumes:
+      - './rootfs/data/passed:/data/passed'
+    networks:
+      - passed
+
+networks:
+  passed:
+    name: passed
+    external: false
