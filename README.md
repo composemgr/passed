@@ -10,7 +10,7 @@ Passed is a containerized service deployed using Docker Compose. This setup prov
 
 ### Using curl
 ```shell
-curl -q -LSsf "https://raw.githubusercontent.com/composemgr/passed/main/docker-compose.yaml" | docker compose -f - up -d
+curl -q -LSsf "https://raw.githubusercontent.com/composemgr/passed/main/docker-compose.yaml" -o compose.yml
 ```
 
 ### Using git
