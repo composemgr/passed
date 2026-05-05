@@ -41,8 +41,8 @@ BASE_DOMAIN_NAME=
 
 ## 📂 Volumes
 
-- `./rootfs/config/passed` - Configuration files
-- `./rootfs/data/passed` - Application data
+- `./volumes/config/passed` - Configuration files
+- `./volumes/data/passed` - Application data
 
 ## 🔐 Security
 
