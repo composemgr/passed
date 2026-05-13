@@ -19,14 +19,38 @@ services:
       TZ: ${TZ:-America/New_York}
       PASSED_STORE_TYPE: dir
       PASSED_STORE_DIR_PATH: /data/passed
+      CONTAINER_NAME: passed-app
+      HOSTNAME: ${BASE_HOST_NAME:-$HOSTNAME}
     ports:
       - '172.17.0.1:59029:3000'
     volumes:
       - './volumes/data/passed:/data/passed'
     networks:
       - passed
+      - proxy
+      - cloudflare
+    labels:
+      - 'traefik.enable=true'
+      - 'cloudflare.enable=true'
+      - 'traefik.docker.network=proxy'
+      - 'cloudflare.service=http://passed-app:3000'
+      - 'cloudflare.hostname=passed.${CLOUDFLARE_ZONE_NAME:-}'
+      - 'traefik.http.routers.passed-app.entrypoints=http'
+      - 'traefik.http.routers.passed-app-secure.tls=true'
+      - 'traefik.http.routers.passed-app.rule=Host($(${BASE_HOST_NAME:-$HOSTNAME}))'
+      - 'traefik.http.middlewares.passed-app-https-redirect.redirectscheme.scheme=https'
+      - 'traefik.http.routers.passed-app.middlewares=passed-app-https-redirect'
+      - 'traefik.http.routers.passed-app-secure.entrypoints=https'
+      - 'traefik.http.routers.passed-app-secure.rule=Host($(${BASE_HOST_NAME:-$HOSTNAME}))'
+      - 'traefik.http.routers.passed-app-secure.tls.certresolver=cloudflare'
+      - 'traefik.http.routers.passed-app-secure.service=passed-app'
+      - 'traefik.http.services.passed-app.loadbalancer.server.port=3000'
 
 networks:
   passed:
     name: passed
     external: false
+  proxy:
+    external: true
+  cloudflare:
+    external: true
